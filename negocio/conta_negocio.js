@@ -14,6 +14,22 @@ async function buscarSaldo(id) {
     catch(err) { throw err; }
 }
 
+async function buscarPorId(id) {
+    try{ 
+        const conta = await contaPersistencia.buscarPorId(id);
+        if(!conta) {
+            let erro = new Error();
+            erro.message = "Conta nao encontrada";
+            erro.status = 404;
+            throw erro;
+        }
+        return conta;
+    }
+    catch(err) { throw err; }
+}
+
+
 module.exports = {
-    buscarSaldo
+    buscarSaldo,
+    buscarPorId
 }

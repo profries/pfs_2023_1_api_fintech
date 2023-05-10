@@ -19,6 +19,26 @@ async function buscarSaldo(req, res) {
     }
 }
 
+async function buscarPorId(req, res) {    
+    //Obtem os dados request (e da URI)
+    const id = req.params.id;
+    try{ 
+        //Trata a funcionalidade de negocio
+        const conta = await contaNegocio.buscarPorId(id);
+        //Gera o response adequadamente  
+        res.json(conta);
+    }
+    catch(err) {
+        if(err.status) {
+            res.status(err.status).json(err);
+        }
+        else {
+            res.status(500).json({message: "Erro nao identificado"});
+        }
+    }
+}
+
 module.exports = {
-    buscarSaldo
+    buscarSaldo,
+    buscarPorId
 }
