@@ -28,8 +28,25 @@ async function buscarPorId(id) {
     catch(err) { throw err; }
 }
 
+async function inserir(conta) {
+    if(conta && conta.cliente) {
+        try {
+            const contaInserido = await contaPersistencia.inserir(conta);
+            return contaInserido;        
+        }
+        catch(err) { throw err; }
+    }
+    else {
+        const erro = new Error();
+        erro.message = "Falta parametros na conta";
+        erro.status = 400;
+        throw erro;
+    }
+}
+
 
 module.exports = {
     buscarSaldo,
-    buscarPorId
+    buscarPorId,
+    inserir
 }

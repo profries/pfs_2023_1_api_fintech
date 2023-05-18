@@ -64,9 +64,49 @@ async function buscarPorId(id) {
     }
 }
 
+async function inserir(conta) {
+    let resConta;
+    //instanciar Client
+    const cliente = new Client(conexao);
+
+    cliente.connect();
+
+    try{
+        await cliente.query('BEGIN')
+
+        const sqlInserirCliente = "INSERT INTO clientes(cpf, nome, telefone) VALUES($1,$2,$3) RETURNING *";
+        const valuesCliente = [
+            conta.cliente.cpf, 
+            conta.cliente.nome, 
+            conta.cliente.telefone
+        ];
+        const resCliente = await cliente.query(sqlInserirCliente, valuesCliente);
+
+        const sqlInserirConta = "INSERT INTO contas(saldo, status, cliente_id) VALUES($1,$2,$3) RETURNING *";
+        const valuesConta = [
+            conta.saldo ?conta.saldo :0, 
+            "aberto", 
+            resCliente.rows[0].id
+        ];
+        resConta = await cliente.query(sqlInserirConta, valuesConta);
+        await cliente.query("COMMIT");        
+    }
+    catch(err) {
+        await cliente.query("ROLLBACK");
+        throw err;
+    }
+    finally {
+        //fechar a conexao
+        cliente.end();
+    }
+    return resConta[0];
+
+}
+
 module.exports = {
     buscarSaldo,
-    buscarPorId
+    buscarPorId,
+    inserir
 }
 
 // async function main() {

@@ -38,7 +38,26 @@ async function buscarPorId(req, res) {
     }
 }
 
+async function inserir(req, res) {
+    const conta = req.body;
+
+    try{
+        const contaInserida = await contaNegocio.inserir(conta);
+        res.status(201).json(contaInserida);
+        
+    } catch(err) {
+        if(err.status) {
+            res.status(err.status).json(err)
+        }
+        else {
+            console.log("Erro:", err)
+            res.status(500).json({message: "Erro nao identificado"})
+        }
+    }
+}
+
 module.exports = {
     buscarSaldo,
-    buscarPorId
+    buscarPorId,
+    inserir
 }

@@ -6,5 +6,6 @@ const router = express.Router();
 //api/contas
 router.get('/:id/saldo',contaController.buscarSaldo)
 router.get('/:id',contaController.buscarPorId)
+router.post('/', contaController.inserir)
 
 module.exports = router;
